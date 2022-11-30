@@ -6,4 +6,4 @@ const commentSchema = new mongoose_1.Schema({
     published: { type: Boolean, required: true, default: false },
     commenter: { type: mongoose_1.Schema.Types.ObjectId, required: true },
 }, { timestamps: true });
-exports.default = (0, mongoose_1.model)("comment", commentSchema);
+exports.default = (0, mongoose_1.model)("Comment", commentSchema);

@@ -6,5 +6,6 @@ const postSchema = new mongoose_1.Schema({
     content: { type: String, required: true },
     published: { type: Boolean, required: true, default: false },
     poster: { type: mongoose_1.Schema.Types.ObjectId, required: true },
+    comments: { type: [mongoose_1.Schema.Types.ObjectId], required: true },
 }, { timestamps: true });
-exports.default = (0, mongoose_1.model)("post", postSchema);
+exports.default = (0, mongoose_1.model)("Post", postSchema);

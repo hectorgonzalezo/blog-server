@@ -19,4 +19,4 @@ const userSchema = new mongoose_1.Schema({
         default: "regular",
     },
 });
-exports.default = (0, mongoose_1.model)("user", userSchema);
+exports.default = (0, mongoose_1.model)("User", userSchema);

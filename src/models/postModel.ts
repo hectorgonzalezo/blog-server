@@ -7,8 +7,9 @@ const postSchema: Schema = new Schema(
     content: { type: String, required: true },
     published: { type: Boolean, required: true, default: false },
     poster: { type: Schema.Types.ObjectId, required: true },
+    comments: { type: [Schema.Types.ObjectId], required: true },
   },
   { timestamps: true },
 );
 
-export default model<IPost>("post", postSchema);
+export default model<IPost>("Post", postSchema);

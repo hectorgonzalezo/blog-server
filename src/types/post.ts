@@ -4,5 +4,6 @@ export interface IPost extends Document {
   title: string;
   content: string;
   published: boolean;
-  poster: ObjectId
+  poster: ObjectId;
+  comments: ObjectId[];
 }

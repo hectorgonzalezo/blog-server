@@ -1,5 +1,5 @@
 
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 const mongoose = require("mongoose");
 const createError = require('http-errors');
 const path = require('path');
@@ -19,6 +19,9 @@ const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 const indexRouter = require('./routes/index');
+const postRouter = require('./routes/post');
+const commentRouter = require('./routes/comment');
+const userRouter = require('./routes/user');
 
 const app = express();
 
@@ -29,21 +32,32 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/posts/', postRouter);
+// Comments route includes middleware to pass message id to request
+app.use(
+  "/posts/:id/comments/",
+  (req: Request, res: Response, next: NextFunction) => {
+    req.messageId = req.params.id;
+    next();
+  },
+  commentRouter
+);
+app.use('/users/', userRouter);
 
 // catch 404 and forward to error handler
-app.use((req: Request, res: Response, next: Function) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));
 });
 
 // error handler
-app.use(function (err: any, req: Request, res: Response, next: Function) {
+app.use(function (err: any, req: Request, res: Response, next: NextFunction) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.json({ error: 'error' });
 });
 
 module.exports = app;
