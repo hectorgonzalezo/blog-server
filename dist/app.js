@@ -4,10 +4,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const mongoose = require("mongoose");
 const createError = require('http-errors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+// Get .env
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+// Set up default mongoose connection
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+// Get the default connection
+const db = mongoose.connection;
+// Bind connection to error event (to get notification of connection errors)
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
 const indexRouter = require('./routes/index');
 const app = (0, express_1.default)();
 app.use(logger('dev'));
