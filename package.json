@@ -6,7 +6,7 @@
     "start": "node ./dist/bin/www",
     "devStart": "nodemon ./dist/bin/www",
     "build": "tsc",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon ./dist/bin/www\""
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

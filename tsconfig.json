@@ -2,18 +2,16 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
-    "baseUrl": "./",
-    "paths": {
-      "*": ["./src/*"]
-    },
-    "typeRoots" : ["./src/types", "./node_modules/@types"],
+    "baseUrl": ".",
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
     "strictNullChecks": true,
+    "sourceMap": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots" : ["./src/types", "./node_modules/@types", "types"]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/*.ts"],
   "exclude": ["src/types/*.ts", "node_modules", ".vscode"]
 }

@@ -18,3 +18,4 @@ router.put('/:userId', userController.update_user);
 // delete 
 router.delete('/:userId', userController.delete_user);
 module.exports = router;
+//# sourceMappingURL=user.js.map

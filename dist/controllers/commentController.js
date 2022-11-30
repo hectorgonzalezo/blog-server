@@ -15,3 +15,4 @@ exports.update_comment = (req, res) => {
 exports.delete_comment = (req, res) => {
     res.json({ response: 'delete comment' + req.params.commentId });
 };
+//# sourceMappingURL=commentController.js.map

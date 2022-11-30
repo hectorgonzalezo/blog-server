@@ -18,3 +18,4 @@ router.put('/:id', postController.update_post);
 // delete 
 router.delete('/:id', postController.delete_post);
 module.exports = router;
+//# sourceMappingURL=post.js.map

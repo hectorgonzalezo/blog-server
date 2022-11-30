@@ -15,3 +15,4 @@ exports.update_post = (req, res) => {
 exports.delete_post = (req, res) => {
     res.json({ response: 'delete post' + req.params.id });
 };
+//# sourceMappingURL=postController.js.map

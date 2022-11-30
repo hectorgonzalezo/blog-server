@@ -18,3 +18,4 @@ router.put('/:commentId', commentController.update_comment);
 // delete 
 router.delete('/:commentId', commentController.delete_comment);
 module.exports = router;
+//# sourceMappingURL=comment.js.map

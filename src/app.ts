@@ -1,8 +1,10 @@
 
 import express, { Request, Response, NextFunction } from 'express';
+import { ExtendedRequest } from './types/extendedRequest';
 const mongoose = require("mongoose");
 const createError = require('http-errors');
 const path = require('path');
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
@@ -10,7 +12,6 @@ const logger = require('morgan');
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
-
 // Set up default mongoose connection
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 // Get the default connection
@@ -30,13 +31,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 
 app.use('/', indexRouter);
 app.use('/posts/', postRouter);
 // Comments route includes middleware to pass message id to request
 app.use(
   "/posts/:id/comments/",
-  (req: Request, res: Response, next: NextFunction) => {
+  (req: ExtendedRequest, res: Response, next: NextFunction) => {
     req.messageId = req.params.id;
     next();
   },

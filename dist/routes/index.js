@@ -10,3 +10,4 @@ router.get('/', (req, res, next) => {
     res.json({ response: 'home' });
 });
 module.exports = router;
+//# sourceMappingURL=index.js.map

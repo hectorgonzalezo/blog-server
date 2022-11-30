@@ -9,3 +9,4 @@ const postSchema = new mongoose_1.Schema({
     comments: { type: [mongoose_1.Schema.Types.ObjectId], required: true },
 }, { timestamps: true });
 exports.default = (0, mongoose_1.model)("Post", postSchema);
+//# sourceMappingURL=postModel.js.map

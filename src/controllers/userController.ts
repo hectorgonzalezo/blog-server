@@ -1,3 +1,4 @@
+import { Response, Request } from "express";
 import { IUser } from "../types/user";
 import User from "../models/userModel";
 

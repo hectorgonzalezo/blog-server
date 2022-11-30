@@ -1,7 +1,9 @@
+import { Response, Request } from "express";
+import { ExtendedRequest } from  '../types/extendedRequest';
 import { IComment } from "../types/comment";
 import Comment from "../models/commentModel";
 
-exports.get_all_comments = (req: Request, res: Response) => {
+exports.get_all_comments = (req: ExtendedRequest, res: Response) => {
   res.json({ response: `All comments in post ${req.messageId}` });
 };
 

@@ -15,3 +15,4 @@ exports.update_user = (req, res) => {
 exports.delete_user = (req, res) => {
     res.json({ response: 'delete user' + req.params.userId });
 };
+//# sourceMappingURL=userController.js.map
