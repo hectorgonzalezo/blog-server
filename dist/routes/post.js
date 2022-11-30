@@ -12,7 +12,7 @@ router.get('/', postController.get_all_posts);
 // Read
 router.get('/:id', postController.get_post);
 // create 
-router.post('/:id', postController.create_post);
+router.post('/', postController.create_post);
 // update 
 router.put('/:id', postController.update_post);
 // delete 
