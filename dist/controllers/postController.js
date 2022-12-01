@@ -40,11 +40,8 @@ exports.create_post = [
         const errors = validationResult(req);
         // If there are errors, return body
         if (!errors.isEmpty()) {
-            // There are errors. Render form again with sanitized values/errors messages.
-            res.render("author_form", {
-                post: req.body,
-                errors: errors.array(),
-            });
+            // There are errors, send them via json
+            res.json({ errors: errors.array() });
             return;
         }
         // If data is valid
@@ -96,11 +93,8 @@ exports.update_post = [
         const errors = validationResult(req);
         // If there are errors, return body
         if (!errors.isEmpty()) {
-            // There are errors. Render form again with sanitized values/errors messages.
-            res.render("author_form", {
-                post: req.body,
-                errors: errors.array(),
-            });
+            // There are errors, send them via json
+            res.json({ errors: errors.array() });
             return;
         }
         // If data is valid
@@ -115,12 +109,18 @@ exports.update_post = [
             comments: reqBody.comments,
             _id: req.params.id,
         });
+        // option to return updated post
+        const updateOption = {
+            new: true,
+            upsert: true,
+            rawResult: true,
+        };
         // update previous post with new data
-        postModel_1.default.findByIdAndUpdate(req.params.id, newPost, (updateErr, updatedPost) => {
+        postModel_1.default.findByIdAndUpdate(req.params.id, newPost, updateOption, (updateErr, updatedPost) => {
             if (updateErr) {
                 return next(updateErr);
             }
-            res.json({ post: newPost });
+            res.json({ post: updatedPost });
         });
     },
 ];
@@ -129,7 +129,7 @@ exports.delete_post = [
         // delete all comments in post
         commentModel_1.default.find({ post: req.params.id }).exec((err, results) => {
             console.log(results);
-            results.forEach((comment, i) => {
+            results.forEach((comment) => {
                 commentModel_1.default.findByIdAndRemove(comment._id, (removeErr) => {
                     if (removeErr) {
                         return next(removeErr);

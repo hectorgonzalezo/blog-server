@@ -1,5 +1,6 @@
 import { Response, Request, NextFunction } from "express";
 import { MongoError } from 'mongodb';
+import { QueryOptions } from "mongoose";
 const { body, validationResult } = require("express-validator");
 import { IPost } from "../types/post";
 import Post from "../models/postModel";
@@ -26,7 +27,7 @@ exports.get_all_posts = (req: Request, res: Response, next: NextFunction) => {
 exports.create_post = [
   body("title", "A blog title is required")
     .trim()
-    .isLength({ min: 1, max: 100})
+    .isLength({ min: 1, max: 100 })
     .withMessage("Blog title must be between 1 and 100 characters")
     .escape(),
   body("content", "Blog content is required")
@@ -42,11 +43,8 @@ exports.create_post = [
     const errors = validationResult(req);
     // If there are errors, return body
     if (!errors.isEmpty()) {
-      // There are errors. Render form again with sanitized values/errors messages.
-      res.render("author_form", {
-        post: req.body,
-        errors: errors.array(),
-      });
+      // There are errors, send them via json
+      res.json({ errors: errors.array() });
       return;
     }
     // If data is valid
@@ -100,11 +98,8 @@ exports.update_post = [
     const errors = validationResult(req);
     // If there are errors, return body
     if (!errors.isEmpty()) {
-      // There are errors. Render form again with sanitized values/errors messages.
-      res.render("author_form", {
-        post: req.body,
-        errors: errors.array(),
-      });
+      // There are errors, send them via json
+      res.json({ errors: errors.array() });
       return;
     }
     // If data is valid
@@ -122,16 +117,22 @@ exports.update_post = [
       comments: reqBody.comments,
       _id: req.params.id,
     });
-
+    // option to return updated post
+    const updateOption: QueryOptions & { rawResult: true }  = {
+      new: true,
+      upsert: true,
+      rawResult: true,
+    };
     // update previous post with new data
     Post.findByIdAndUpdate(
       req.params.id,
       newPost,
-      (updateErr: MongoError, updatedPost: IPost) => {
+      updateOption,
+      (updateErr, updatedPost: IPost) => {
         if (updateErr) {
           return next(updateErr);
         }
-        res.json({ post: newPost });
+        res.json({ post: updatedPost });
       }
     );
   },
@@ -142,7 +143,7 @@ exports.delete_post = [
     // delete all comments in post
     Comment.find({ post: req.params.id }).exec((err, results) => {
       console.log(results)
-      results.forEach((comment: IComment, i) => {
+      results.forEach((comment: IComment) => {
         Comment.findByIdAndRemove(comment._id, (removeErr: MongoError) => {
           if (removeErr) {
             return next(removeErr);

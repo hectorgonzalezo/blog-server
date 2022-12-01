@@ -10,12 +10,12 @@ const router = express_1.default.Router();
 router.get('/', commentController.get_all_comments);
 //Individual comment CRUD operations
 // Read
-router.get('/:commentId', commentController.get_comment);
+router.get('/:id', commentController.get_comment);
 // create 
-router.post('/:commentId', commentController.create_comment);
+router.post('/', commentController.create_comment);
 // update 
-router.put('/:commentId', commentController.update_comment);
+router.put('/:id', commentController.update_comment);
 // delete 
-router.delete('/:commentId', commentController.delete_comment);
+router.delete('/:id', commentController.delete_comment);
 module.exports = router;
 //# sourceMappingURL=comment.js.map
