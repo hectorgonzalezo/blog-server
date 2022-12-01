@@ -4,4 +4,5 @@ export interface IComment extends Document {
   content: string;
   published: boolean;
   poster: ObjectId;
+  post: ObjectId;
 }

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.get_all_comments = (req, res) => {
-    res.json({ response: `All comments in post ${req.messageId}` });
+    res.json({ response: `All comments in post ${req.postId}` });
 };
 exports.get_comment = (req, res) => {
     res.json({ response: 'read comment' + req.params.commentId });

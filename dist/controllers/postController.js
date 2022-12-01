@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const { body, validationResult } = require("express-validator");
 const postModel_1 = __importDefault(require("../models/postModel"));
+const commentModel_1 = __importDefault(require("../models/commentModel"));
+const POSTERID = "6387b1034b273a93bba9303e";
 // Get all posts
 exports.get_all_posts = (req, res, next) => {
     postModel_1.default.find()
@@ -15,7 +17,6 @@ exports.get_all_posts = (req, res, next) => {
             console.log(err);
             return next(err);
         }
-        console.log(posts);
         res.json({ posts });
     });
 };
@@ -54,7 +55,7 @@ exports.create_post = [
             content: reqBody.content,
             published: reqBody.published,
             // Change poster id from hardcoded
-            poster: "6387b1034b273a93bba9303e",
+            poster: POSTERID,
             comments: reqBody.comments,
         });
         newPost.save((err) => {
@@ -62,7 +63,7 @@ exports.create_post = [
                 return next(err);
             }
             // Successful, send post data
-            res.json({ response: "create post" + req.body.title });
+            res.json({ post: newPost });
         });
     }
 ];
@@ -77,10 +78,76 @@ exports.get_post = (req, res, next) => {
         res.json({ post });
     });
 };
-exports.update_post = (req, res) => {
-    res.json({ response: 'update post' + req.params.id });
-};
-exports.delete_post = (req, res) => {
-    res.json({ response: 'delete post' + req.params.id });
-};
+// update existing post
+exports.update_post = [
+    body("title", "A blog title is required")
+        .trim()
+        .isLength({ min: 1, max: 100 })
+        .withMessage("Blog title must be between 1 and 100 characters")
+        .escape(),
+    body("content", "Blog content is required")
+        .trim()
+        .isLength({ min: 1 })
+        .withMessage("Blog content can't be empty")
+        .escape(),
+    body("poster", "Blog poster is required").trim().escape(),
+    (req, res, next) => {
+        // get validation errors
+        const errors = validationResult(req);
+        // If there are errors, return body
+        if (!errors.isEmpty()) {
+            // There are errors. Render form again with sanitized values/errors messages.
+            res.render("author_form", {
+                post: req.body,
+                errors: errors.array(),
+            });
+            return;
+        }
+        // If data is valid
+        // Create new post
+        const reqBody = req.body;
+        const newPost = new postModel_1.default({
+            title: reqBody.title,
+            content: reqBody.content,
+            published: reqBody.published,
+            // Change poster id from hardcoded
+            poster: POSTERID,
+            comments: reqBody.comments,
+            _id: req.params.id,
+        });
+        // update previous post with new data
+        postModel_1.default.findByIdAndUpdate(req.params.id, newPost, (updateErr, updatedPost) => {
+            if (updateErr) {
+                return next(updateErr);
+            }
+            res.json({ post: newPost });
+        });
+    },
+];
+exports.delete_post = [
+    (req, res, next) => {
+        // delete all comments in post
+        commentModel_1.default.find({ post: req.params.id }).exec((err, results) => {
+            console.log(results);
+            results.forEach((comment, i) => {
+                commentModel_1.default.findByIdAndRemove(comment._id, (removeErr) => {
+                    if (removeErr) {
+                        return next(removeErr);
+                    }
+                });
+            });
+            next();
+        });
+    },
+    // delete post
+    (req, res, next) => {
+        postModel_1.default.findByIdAndRemove(req.params.id, (err) => {
+            if (err) {
+                return next(err);
+            }
+        });
+        // return No Content
+        res.json({ response: `Post ${req.params.id} deleted` });
+    },
+];
 //# sourceMappingURL=postController.js.map

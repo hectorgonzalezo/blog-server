@@ -39,7 +39,7 @@ app.use('/posts/', postRouter);
 app.use(
   "/posts/:id/comments/",
   (req: ExtendedRequest, res: Response, next: NextFunction) => {
-    req.messageId = req.params.id;
+    req.postId = req.params.id;
     next();
   },
   commentRouter

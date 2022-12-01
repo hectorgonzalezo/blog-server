@@ -4,7 +4,7 @@ import { IComment } from "../types/comment";
 import Comment from "../models/commentModel";
 
 exports.get_all_comments = (req: ExtendedRequest, res: Response) => {
-  res.json({ response: `All comments in post ${req.messageId}` });
+  res.json({ response: `All comments in post ${req.postId}` });
 };
 
 exports.get_comment = (req: Request, res: Response) => {

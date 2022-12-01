@@ -6,6 +6,7 @@ const commentSchema: Schema = new Schema(
     content: { type: String, required: true },
     published: { type: Boolean, required: true, default: false },
     commenter: { type: Schema.Types.ObjectId, required: true },
+    post: { type: Schema.Types.ObjectId, required: true },
   },
   { timestamps: true },
 );

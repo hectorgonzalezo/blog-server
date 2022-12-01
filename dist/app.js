@@ -35,7 +35,7 @@ app.use('/', indexRouter);
 app.use('/posts/', postRouter);
 // Comments route includes middleware to pass message id to request
 app.use("/posts/:id/comments/", (req, res, next) => {
-    req.messageId = req.params.id;
+    req.postId = req.params.id;
     next();
 }, commentRouter);
 app.use('/users/', userRouter);
