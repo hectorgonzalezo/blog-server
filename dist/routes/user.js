@@ -6,16 +6,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const userController = require('../controllers/userController');
 const router = express_1.default.Router();
-// Get all users
-router.get('/', userController.get_all_users);
+// Log in
+router.post('/log-in', userController.login_user);
+// Log out
+router.get('/log-out', userController.logout_user);
 //Individual user CRUD operations
 // Read
-router.get('/:userId', userController.get_user);
-// create 
-router.post('/:userId', userController.create_user);
+router.get('/:id', userController.get_user);
+// create, sign up
+router.post('/sign-up', userController.create_user);
 // update 
-router.put('/:userId', userController.update_user);
+router.put('/:id', userController.update_user);
 // delete 
-router.delete('/:userId', userController.delete_user);
+router.delete('/:id', userController.delete_user);
 module.exports = router;
 //# sourceMappingURL=user.js.map
