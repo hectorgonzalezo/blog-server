@@ -8,10 +8,14 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+// import login strategy
+require("./passport");
+
 // Get .env
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
+
 // Set up default mongoose connection
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 // Get the default connection
@@ -24,6 +28,7 @@ const postRouter = require('./routes/post');
 const commentRouter = require('./routes/comment');
 const userRouter = require('./routes/user');
 
+
 const app = express();
 
 app.use(logger('dev'));
@@ -33,9 +38,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
+
 app.use('/', indexRouter);
 app.use('/posts/', postRouter);
-// Comments route includes middleware to pass message id to request
+// Comments route includes middleware to pass post id to request
 app.use(
   "/posts/:id/comments/",
   (req: ExtendedRequest, res: Response, next: NextFunction) => {

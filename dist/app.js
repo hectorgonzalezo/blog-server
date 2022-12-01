@@ -10,6 +10,8 @@ const path = require('path');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+// import login strategy
+require("./passport");
 // Get .env
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
@@ -33,7 +35,7 @@ app.use(express_1.default.static(path.join(__dirname, 'public')));
 app.use(cors());
 app.use('/', indexRouter);
 app.use('/posts/', postRouter);
-// Comments route includes middleware to pass message id to request
+// Comments route includes middleware to pass post id to request
 app.use("/posts/:id/comments/", (req, res, next) => {
     req.postId = req.params.id;
     next();

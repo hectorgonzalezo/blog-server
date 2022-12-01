@@ -1,8 +1,9 @@
 import { Response, Request, NextFunction } from "express";
+import passport from 'passport';
 import { MongoError } from 'mongodb';
 import { body, validationResult } from 'express-validator';
 const bcrypt = require("bcryptjs");
-const passport = require("passport");
+const jwt = require("jsonwebtoken");
 import { IUser } from "../types/user";
 import User from "../models/userModel";
 
@@ -18,9 +19,35 @@ exports.get_user = (req: Request, res: Response, next: NextFunction) => {
 
 
 // Log in
-exports.login_user = (req: Request, res: Response) => {
-  res.json({ response: 'login user' });
-}; 
+exports.login_user = (req: Request, res: Response, next: NextFunction) => {
+  passport.authenticate(
+    "local",
+    { session: false },
+    (err: MongoError, user: IUser, info: any) => {
+      if (err || !user) {
+        console.log({ err, user })
+        return res.status(400).json({
+          message: "Something is not right",
+          user: user,
+        });
+      }
+      req.login(user, { session: false }, (loginErr: any) => {
+        if (loginErr) {
+          res.send(loginErr);
+        }
+        // generate a signed son web token with the contents of user object and return it in the response
+        // user must be converted to JSON
+        jwt.sign(user.toJSON(), process.env.AUTH_SECRET, {}, (signErr: any, token: string) => {
+          if (signErr) {
+            return next(signErr);
+          }
+          return res.json({ user, token });
+        }
+        )
+      });
+    }
+  )(req, res);
+};
 
 // log out
 exports.logout_user = (req: Request, res: Response) => {
@@ -89,6 +116,8 @@ exports.create_user = [
 exports.update_user = (req: Request, res: Response) => {
   res.json({ response: 'update user' + req.params.userId  });
 };
+
+
 exports.delete_user = (req: Request, res: Response) => {
   res.json({ response: 'delete user' + req.params.userId  });
 };

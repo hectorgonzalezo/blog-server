@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const passport_1 = __importDefault(require("passport"));
 const express_validator_1 = require("express-validator");
 const bcrypt = require("bcryptjs");
-const passport = require("passport");
+const jwt = require("jsonwebtoken");
 const userModel_1 = __importDefault(require("../models/userModel"));
 // Get info about a particular user
 exports.get_user = (req, res, next) => {
@@ -17,8 +18,29 @@ exports.get_user = (req, res, next) => {
     });
 };
 // Log in
-exports.login_user = (req, res) => {
-    res.json({ response: 'login user' });
+exports.login_user = (req, res, next) => {
+    passport_1.default.authenticate("local", { session: false }, (err, user, info) => {
+        if (err || !user) {
+            console.log({ err, user });
+            return res.status(400).json({
+                message: "Something is not right",
+                user: user,
+            });
+        }
+        req.login(user, { session: false }, (loginErr) => {
+            if (loginErr) {
+                res.send(loginErr);
+            }
+            // generate a signed son web token with the contents of user object and return it in the response
+            // user must be converted to JSON
+            jwt.sign(user.toJSON(), process.env.AUTH_SECRET, {}, (signErr, token) => {
+                if (signErr) {
+                    return next(signErr);
+                }
+                return res.json({ user, token });
+            });
+        });
+    })(req, res);
 };
 // log out
 exports.logout_user = (req, res) => {
