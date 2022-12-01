@@ -13,7 +13,7 @@ const COMMENTERID = "6387b1034b273a93bba9303e";
 exports.get_all_comments = (req, res, next) => {
     commentModel_1.default.find({ post: req.postId })
         .sort({ createdAt: 1 })
-        .populate("commenter")
+        .populate("commenter", "username")
         .exec((err, comments) => {
         if (err) {
             return next(err);
@@ -28,15 +28,13 @@ exports.create_comment = [
         .isLength({ min: 1 })
         .withMessage("Blog content can't be empty")
         .escape(),
-    (0, express_validator_1.body)("poster", "Blog commenter is required")
-        .trim()
-        .escape(),
+    (0, express_validator_1.body)("poster", "Blog commenter is required").trim().escape(),
     (req, res, next) => {
         // get validation errors
         const errors = (0, express_validator_1.validationResult)(req);
         // If there are errors, return body
         if (!errors.isEmpty()) {
-            // There are errors, send them via json 
+            // There are errors, send them via json
             res.json({ errors: errors.array() });
         }
         // If data is valid
@@ -50,6 +48,7 @@ exports.create_comment = [
             post: req.postId,
         });
         newComment.save((err) => {
+            console.log("aqui");
             if (err) {
                 return next(err);
             }
@@ -65,7 +64,12 @@ exports.create_comment = [
                     return next(updateErr);
                 }
                 // find post again so that it can populate the comments
-                postModel_1.default.findById(req.postId).populate({ path: "comments", populate: { path: "commenter" } }).exec((postErr, post) => {
+                postModel_1.default.findById(req.postId)
+                    .populate({
+                    path: "comments",
+                    populate: { path: "commenter", select: "username" },
+                })
+                    .exec((postErr, post) => {
                     if (postErr) {
                         return next(postErr);
                     }
@@ -79,7 +83,7 @@ exports.create_comment = [
 // Get a single comment
 exports.get_comment = (req, res, next) => {
     commentModel_1.default.findById(req.params.id)
-        .populate("commenter")
+        .populate("commenter", "username")
         .exec((err, comment) => {
         if (err) {
             return next(err);
@@ -117,12 +121,16 @@ exports.update_comment = [
         });
         // update previous comment with new data
         commentModel_1.default.findByIdAndUpdate(req.params.id, newComment, (updateErr, updatedComment) => {
-            console.log(updateErr);
             if (updateErr) {
                 return next(updateErr);
             }
             // find post again so that it can populate the comments
-            postModel_1.default.findById(req.postId).populate({ path: "comments", populate: { path: "commenter" } }).exec((postErr, post) => {
+            postModel_1.default.findById(req.postId)
+                .populate({
+                path: "comments",
+                populate: { path: "commenter", select: "username" },
+            })
+                .exec((postErr, post) => {
                 if (postErr) {
                     return next(postErr);
                 }
@@ -133,22 +141,24 @@ exports.update_comment = [
     },
 ];
 // delete comment
-exports.delete_comment =
-    (req, res, next) => {
-        commentModel_1.default.findByIdAndRemove(req.params.id, (err) => {
-            if (err) {
-                return next(err);
+exports.delete_comment = (req, res, next) => {
+    commentModel_1.default.findByIdAndRemove(req.params.id, (err) => {
+        if (err) {
+            return next(err);
+        }
+        // find post again so that it can populate the comments
+        postModel_1.default.findById(req.postId)
+            .populate({
+            path: "comments",
+            populate: { path: "commenter", select: "username" },
+        })
+            .exec((postErr, post) => {
+            if (postErr) {
+                return next(postErr);
             }
-            // find post again so that it can populate the comments
-            postModel_1.default.findById(req.postId)
-                .populate({ path: "comments", populate: { path: "commenter" } })
-                .exec((postErr, post) => {
-                if (postErr) {
-                    return next(postErr);
-                }
-                // return No Content
-                res.json({ response: `Comment ${req.params.id} deleted`, post });
-            });
+            // return No Content
+            res.json({ response: `Comment ${req.params.id} deleted`, post });
         });
-    };
+    });
+};
 //# sourceMappingURL=commentController.js.map

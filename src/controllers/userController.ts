@@ -3,6 +3,7 @@ import { IUser } from "../types/user";
 import User from "../models/userModel";
 
 exports.get_all_users = (req: Request, res: Response) => {
+  User.find().
   res.json({ response: 'All users' });
 };
 

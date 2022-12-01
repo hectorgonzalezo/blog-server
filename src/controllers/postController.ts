@@ -13,7 +13,8 @@ const POSTERID = "6387b1034b273a93bba9303e";
 exports.get_all_posts = (req: Request, res: Response, next: NextFunction) => {
   Post.find()
     .sort({ createdAt: 1 })
-    .populate("poster")
+    .populate("poster", "username")
+    .populate("comments")
     .exec((err, posts: IPost[]) => {
       if (err) {
         console.log(err)
@@ -71,7 +72,10 @@ exports.create_post = [
 // Get a single post
 exports.get_post = (req: Request, res: Response, next: NextFunction) => {
   Post.findById(req.params.id)
-    .populate("comments")
+    .populate({
+      path: "comments",
+      populate: { path: "commenter", select: "username" },
+    })
     .exec((err, post) => {
       if (err) {
         return next(err);
@@ -142,7 +146,6 @@ exports.delete_post = [
   (req: Request, res: Response, next: NextFunction) => {
     // delete all comments in post
     Comment.find({ post: req.params.id }).exec((err, results) => {
-      console.log(results)
       results.forEach((comment: IComment) => {
         Comment.findByIdAndRemove(comment._id, (removeErr: MongoError) => {
           if (removeErr) {

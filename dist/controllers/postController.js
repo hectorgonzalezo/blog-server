@@ -11,7 +11,8 @@ const POSTERID = "6387b1034b273a93bba9303e";
 exports.get_all_posts = (req, res, next) => {
     postModel_1.default.find()
         .sort({ createdAt: 1 })
-        .populate("poster")
+        .populate("poster", "username")
+        .populate("comments")
         .exec((err, posts) => {
         if (err) {
             console.log(err);
@@ -67,7 +68,10 @@ exports.create_post = [
 // Get a single post
 exports.get_post = (req, res, next) => {
     postModel_1.default.findById(req.params.id)
-        .populate("comments")
+        .populate({
+        path: "comments",
+        populate: { path: "commenter", select: "username" },
+    })
         .exec((err, post) => {
         if (err) {
             return next(err);
@@ -128,7 +132,6 @@ exports.delete_post = [
     (req, res, next) => {
         // delete all comments in post
         commentModel_1.default.find({ post: req.params.id }).exec((err, results) => {
-            console.log(results);
             results.forEach((comment) => {
                 commentModel_1.default.findByIdAndRemove(comment._id, (removeErr) => {
                     if (removeErr) {
