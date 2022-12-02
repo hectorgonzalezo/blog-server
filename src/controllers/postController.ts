@@ -14,7 +14,6 @@ exports.get_all_posts = (req: Request, res: Response, next: NextFunction) => {
   Post.find()
     .sort({ createdAt: 1 })
     .populate("poster", "username")
-    .populate("comments")
     .exec((err, posts: IPost[]) => {
       if (err) {
         return next(err);
