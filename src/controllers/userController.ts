@@ -39,7 +39,7 @@ exports.login_user = (req: Request, res: Response, next: NextFunction) => {
         jwt.sign(
           user.toJSON(),
           process.env.AUTH_SECRET,
-          { expiresIn: '24h' },
+          { expiresIn: "24h" },
           (signErr: any, token: string) => {
             if (signErr) {
               return next(signErr);
@@ -51,7 +51,6 @@ exports.login_user = (req: Request, res: Response, next: NextFunction) => {
     }
   )(req, res);
 };
-
 
 // Sign user up
 exports.create_user = [
@@ -126,7 +125,6 @@ exports.create_user = [
     );
   },
 ];
-
 
 // Update a single user
 exports.update_user = [
@@ -217,6 +215,6 @@ exports.delete_user = (req: Request, res: Response, next: NextFunction) => {
     if (err) {
       return next(err);
     }
-    res.json({ response: `deleted user ${req.params.id }` });
+    res.json({ response: `deleted user ${req.params.id}` });
   });
 };

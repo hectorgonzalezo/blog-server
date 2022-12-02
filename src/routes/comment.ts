@@ -34,15 +34,15 @@ router.put(
         if (err) {
           return next(err);
         }
-        Comment.findById(req.params.id)
-          .exec((findErr, comment: IComment | null) => {
+        Comment.findById(req.params.id).exec(
+          (findErr, comment: IComment | null) => {
             if (findErr) {
               return next(findErr);
             }
             // Only update if user is administrator or the commenter
             if (
               user.permission === "admin" ||
-              comment && comment.commenter.toString() === user._id.toString()
+              (comment && comment.commenter.toString() === user._id.toString())
             ) {
               next();
             } else {
@@ -52,15 +52,13 @@ router.put(
                   "Only administrators or the user itself can update a comment",
               });
             }
-           
-          });
-
+          }
+        );
       }
     )(req, res, next);
   },
   commentController.update_comment
 );
-
 
 // delete
 // only if logged in user is the commenter

@@ -23,14 +23,13 @@ router.put("/:id", (req, res, next) => {
         if (err) {
             return next(err);
         }
-        commentModel_1.default.findById(req.params.id)
-            .exec((findErr, comment) => {
+        commentModel_1.default.findById(req.params.id).exec((findErr, comment) => {
             if (findErr) {
                 return next(findErr);
             }
             // Only update if user is administrator or the commenter
             if (user.permission === "admin" ||
-                comment && comment.commenter.toString() === user._id.toString()) {
+                (comment && comment.commenter.toString() === user._id.toString())) {
                 next();
             }
             else {

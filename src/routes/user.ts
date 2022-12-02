@@ -1,14 +1,13 @@
 import express, { Request, Response, NextFunction } from "express";
 import passport from "passport";
 const userController = require("../controllers/userController");
-import { IUser } from '../types/user';
+import { IUser } from "../types/user";
 require("../passport");
 
 const router = express.Router();
 
 // Log in
 router.post("/log-in", userController.login_user);
-
 
 //Individual user CRUD operations
 // Read
@@ -53,7 +52,10 @@ router.put(
           return next(err);
         }
         // Only update if user is administrator or the owner
-        if (user.permission === "admin" || user._id.toString() === req.params.id) {
+        if (
+          user.permission === "admin" ||
+          user._id.toString() === req.params.id
+        ) {
           next();
         } else {
           // if user is not admin, return error

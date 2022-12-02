@@ -10,6 +10,8 @@ const path = require("path");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const compression = require("compression");
+const helmet = require("helmet");
 // import login strategy
 require("./passport");
 // Get .env
@@ -30,11 +32,12 @@ const postRouter = require("./routes/post");
 const commentRouter = require("./routes/comment");
 const userRouter = require("./routes/user");
 const app = (0, express_1.default)();
+app.use(compression()); // Compress all routes
+app.use(helmet());
 app.use(logger("dev"));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express_1.default.static(path.join(__dirname, "public")));
 app.use(cors());
 app.use("/", indexRouter);
 app.use("/posts/", postRouter);

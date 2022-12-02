@@ -39,7 +39,8 @@ router.put("/:id", (req, res, next) => {
             return next(err);
         }
         // Only update if user is administrator or the owner
-        if (user.permission === "admin" || user._id.toString() === req.params.id) {
+        if (user.permission === "admin" ||
+            user._id.toString() === req.params.id) {
             next();
         }
         else {

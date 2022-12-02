@@ -32,7 +32,7 @@ exports.login_user = (req, res, next) => {
             }
             // generate a signed son web token with the contents of user object and return it in the response
             // user must be converted to JSON
-            jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: '24h' }, (signErr, token) => {
+            jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "24h" }, (signErr, token) => {
                 if (signErr) {
                     return next(signErr);
                 }
