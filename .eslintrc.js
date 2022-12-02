@@ -7,6 +7,6 @@ module.exports = {
 		"import/extensions": 0,
 	},
   parserOptions: {
-    project: './tsconfig.eslint.json',
+    project: '../tsconfig.eslint.json',
   },
 };

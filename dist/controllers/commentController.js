@@ -28,7 +28,7 @@ exports.create_comment = [
         .isLength({ min: 1 })
         .withMessage("Blog content can't be empty")
         .escape(),
-    (0, express_validator_1.body)("poster", "Blog commenter is required").trim().escape(),
+    (0, express_validator_1.body)("commenter", "Blog commenter is required").trim().escape(),
     (req, res, next) => {
         // get validation errors
         const errors = (0, express_validator_1.validationResult)(req);
@@ -48,7 +48,6 @@ exports.create_comment = [
             post: req.postId,
         });
         newComment.save((err) => {
-            console.log("aqui");
             if (err) {
                 return next(err);
             }

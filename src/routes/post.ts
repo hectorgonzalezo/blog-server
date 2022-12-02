@@ -1,4 +1,6 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
+import { IUser } from "../types/user";
+const passport = require("passport");
 const postController = require("../controllers/postController");
 
 const router = express.Router();
@@ -11,12 +13,81 @@ router.get("/", postController.get_all_posts);
 router.get("/:id", postController.get_post);
 
 // create
-router.post("/", postController.create_post);
+router.post(
+  "/",
+  (req: Request, res: Response, next: NextFunction) => {
+    passport.authenticate(
+      "jwt",
+      { session: false },
+      (err: any, user: IUser) => {
+        if (err) {
+          return next(err);
+        }
+        // Only create post if user is administrator
+        if (user.permission === "admin") {
+          next();
+        } else {
+          // if user is not admin, return error
+          res.status(403).send({
+            error: "Only administrators can create a post",
+          });
+        }
+      }
+    )(req, res, next);
+  },
+  postController.create_post
+);
 
 // update
-router.put("/:id", postController.update_post);
+router.put(
+  "/:id",
+  (req: Request, res: Response, next: NextFunction) => {
+    passport.authenticate(
+      "jwt",
+      { session: false },
+      (err: any, user: IUser) => {
+        if (err) {
+          return next(err);
+        }
+        // Only update post if user is administrator
+        if (user.permission === "admin") {
+          next();
+        } else {
+          // if user is not admin, return error
+          res.status(403).send({
+            error: "Only administrators can update a post",
+          });
+        }
+      }
+    )(req, res, next);
+  },
+  postController.update_post
+);
 
 // delete
-router.delete("/:id", postController.delete_post);
+router.delete(
+  "/:id",
+  (req: Request, res: Response, next: NextFunction) => {
+    passport.authenticate(
+      "jwt",
+      { session: false },
+      (err: any, user: IUser) => {
+        if (err) {
+          return next(err);
+        }
+        // Only delete post if user is administrator
+        if (user.permission === "admin") {
+          next();
+        } else {
+          // if user is not admin, return error
+          res.status(403).send({
+            error: "Only administrators can delete a post",
+          });
+        }
+      }
+    )(req, res, next);
+  },
+  postController.delete_post
+);
 
 module.exports = router;

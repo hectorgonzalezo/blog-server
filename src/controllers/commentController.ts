@@ -37,7 +37,7 @@ exports.create_comment = [
     .isLength({ min: 1 })
     .withMessage("Blog content can't be empty")
     .escape(),
-  body("poster", "Blog commenter is required").trim().escape(),
+  body("commenter", "Blog commenter is required").trim().escape(),
   (req: ExtendedRequest, res: Response, next: NextFunction) => {
     // get validation errors
     const errors = validationResult(req);
@@ -50,7 +50,7 @@ exports.create_comment = [
     // Create new comment
     const reqBody = req.body as Pick<
       IComment,
-      "content" | "published" | "poster" | "post"
+      "content" | "published" | "commenter" | "post"
     >;
     const newComment: IComment = new Comment({
       content: reqBody.content,
@@ -131,7 +131,7 @@ exports.update_comment = [
     // Create new comment
     const reqBody = req.body as Pick<
       IComment,
-      "content" | "published" | "poster" | "post"
+      "content" | "published" | "commenter" | "post"
     >;
     const newComment: IComment = new Comment({
       content: reqBody.content,

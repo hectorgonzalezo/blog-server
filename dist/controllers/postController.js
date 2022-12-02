@@ -15,7 +15,6 @@ exports.get_all_posts = (req, res, next) => {
         .populate("comments")
         .exec((err, posts) => {
         if (err) {
-            console.log(err);
             return next(err);
         }
         res.json({ posts });

@@ -1,6 +1,7 @@
 import { Response, Request, NextFunction } from "express";
 import passport from "passport";
-import { MongoError, QueryOptions } from "mongodb";
+import { MongoError } from "mongodb";
+import { QueryOptions } from "mongoose";
 import { body, validationResult } from "express-validator";
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
