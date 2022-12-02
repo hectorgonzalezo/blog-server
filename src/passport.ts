@@ -1,16 +1,16 @@
 import { MongoError } from "mongodb";
 import { IUser } from "./types/user";
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
 const passportJWT = require("passport-jwt");
 const bcrypt = require("bcryptjs");
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
-import User from './models/userModel';
+import User from "./models/userModel";
 
 // Get .env
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
 }
 
 // user local strategy to log in (username and password)
@@ -24,14 +24,18 @@ passport.use(
         return cb(null, false, { message: "Incorrect email or password." });
       }
       // compare password with hashed password in database
-      bcrypt.compare(password, user.password, (compareErr: any, res: Response) => {
-        if (res) {
-          // passwords match! log user in
-          return cb(null, user, { message: "Logged In Successfully" });
+      bcrypt.compare(
+        password,
+        user.password,
+        (compareErr: any, res: Response) => {
+          if (res) {
+            // passwords match! log user in
+            return cb(null, user, { message: "Logged In Successfully" });
+          }
+          // passwords do not match!
+          return cb(null, false, { message: "Incorrect password" });
         }
-        // passwords do not match!
-        return cb(null, false, { message: "Incorrect password" });
-      })
+      );
     });
   })
 );
@@ -45,13 +49,12 @@ passport.use(
     },
     (jwtPayload: any, cb: Function) => {
       // find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
-      return User.findById(jwtPayload._id, (err:MongoError, user: any) => {
+      return User.findById(jwtPayload._id, (err: MongoError, user: any) => {
         if (err) {
           return cb(err);
         }
         cb(null, user);
-      }
-      )
+      });
     }
   )
 );

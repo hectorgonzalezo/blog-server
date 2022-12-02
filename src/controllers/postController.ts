@@ -1,11 +1,11 @@
 import { Response, Request, NextFunction } from "express";
-import { MongoError } from 'mongodb';
+import { MongoError } from "mongodb";
 import { QueryOptions } from "mongoose";
 const { body, validationResult } = require("express-validator");
 import { IPost } from "../types/post";
 import Post from "../models/postModel";
 import { IComment } from "src/types/comment";
-import Comment from '../models/commentModel';
+import Comment from "../models/commentModel";
 
 const POSTERID = "6387b1034b273a93bba9303e";
 
@@ -17,7 +17,6 @@ exports.get_all_posts = (req: Request, res: Response, next: NextFunction) => {
     .populate("comments")
     .exec((err, posts: IPost[]) => {
       if (err) {
-        console.log(err)
         return next(err);
       }
       res.json({ posts });
@@ -36,9 +35,7 @@ exports.create_post = [
     .isLength({ min: 1 })
     .withMessage("Blog content can't be empty")
     .escape(),
-  body("poster", "Blog poster is required")
-    .trim()
-    .escape(),
+  body("poster", "Blog poster is required").trim().escape(),
   (req: Request, res: Response, next: NextFunction) => {
     // get validation errors
     const errors = validationResult(req);
@@ -50,7 +47,10 @@ exports.create_post = [
     }
     // If data is valid
     // Create new post
-    const reqBody = req.body as Pick<IPost, "title" | "content" | "published" | "poster" | "comments">;
+    const reqBody = req.body as Pick<
+      IPost,
+      "title" | "content" | "published" | "poster" | "comments"
+    >;
     const newPost: IPost = new Post({
       title: reqBody.title,
       content: reqBody.content,
@@ -66,7 +66,7 @@ exports.create_post = [
       // Successful, send post data
       res.json({ post: newPost });
     });
-  }
+  },
 ];
 
 // Get a single post
@@ -122,7 +122,7 @@ exports.update_post = [
       _id: req.params.id,
     });
     // option to return updated post
-    const updateOption: QueryOptions & { rawResult: true }  = {
+    const updateOption: QueryOptions & { rawResult: true } = {
       new: true,
       upsert: true,
       rawResult: true,

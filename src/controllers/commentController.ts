@@ -60,7 +60,6 @@ exports.create_comment = [
       post: req.postId,
     });
     newComment.save((err) => {
-      console.log("aqui");
       if (err) {
         return next(err);
       }

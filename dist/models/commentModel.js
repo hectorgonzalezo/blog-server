@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
-require('./userModel');
-require('./postModel');
+require("./userModel");
+require("./postModel");
 const commentSchema = new mongoose_1.Schema({
     content: { type: String, required: true },
     published: { type: Boolean, required: true, default: false },

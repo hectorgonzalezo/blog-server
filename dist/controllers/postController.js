@@ -33,9 +33,7 @@ exports.create_post = [
         .isLength({ min: 1 })
         .withMessage("Blog content can't be empty")
         .escape(),
-    body("poster", "Blog poster is required")
-        .trim()
-        .escape(),
+    body("poster", "Blog poster is required").trim().escape(),
     (req, res, next) => {
         // get validation errors
         const errors = validationResult(req);
@@ -63,7 +61,7 @@ exports.create_post = [
             // Successful, send post data
             res.json({ post: newPost });
         });
-    }
+    },
 ];
 // Get a single post
 exports.get_post = (req, res, next) => {

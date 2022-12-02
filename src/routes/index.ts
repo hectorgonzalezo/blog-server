@@ -1,11 +1,10 @@
-
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction } from "express";
 
 const router = express.Router();
 
 /* GET home page. */
-router.get('/', (req: Request, res: Response, next: NextFunction) => {
-  res.json({ response: 'home' });
+router.get("/", (req: Request, res: Response, next: NextFunction) => {
+  res.json({ response: "home" });
 });
 
 module.exports = router;
