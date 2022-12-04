@@ -71,6 +71,7 @@ exports.create_post = [
 // Get a single post
 exports.get_post = (req: Request, res: Response, next: NextFunction) => {
   Post.findById(req.params.id)
+    .populate("poster", "username")
     .populate({
       path: "comments",
       populate: { path: "commenter", select: "username" },
