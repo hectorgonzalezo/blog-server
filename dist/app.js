@@ -32,13 +32,13 @@ const postRouter = require("./routes/post");
 const commentRouter = require("./routes/comment");
 const userRouter = require("./routes/user");
 const app = (0, express_1.default)();
+app.use(cors());
 app.use(compression()); // Compress all routes
 app.use(helmet());
 app.use(logger("dev"));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(cors());
 app.use("/", indexRouter);
 app.use("/posts/", postRouter);
 // Comments route includes middleware to pass post id to request

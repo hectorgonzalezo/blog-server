@@ -12,7 +12,6 @@ exports.get_all_posts = (req, res, next) => {
     postModel_1.default.find()
         .sort({ createdAt: 1 })
         .populate("poster", "username")
-        .populate("comments")
         .exec((err, posts) => {
         if (err) {
             return next(err);
@@ -65,6 +64,7 @@ exports.create_post = [
 // Get a single post
 exports.get_post = (req, res, next) => {
     postModel_1.default.findById(req.params.id)
+        .populate("poster", "username")
         .populate({
         path: "comments",
         populate: { path: "commenter", select: "username" },

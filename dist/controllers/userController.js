@@ -18,29 +18,47 @@ exports.get_user = (req, res, next) => {
     });
 };
 // Log in
-exports.login_user = (req, res, next) => {
-    passport_1.default.authenticate("local", { session: false }, (err, user) => {
-        if (err || !user) {
-            return res.status(400).json({
-                message: "Something is not right",
-                user: user,
-            });
+exports.login_user = [
+    (0, express_validator_1.body)("username")
+        .trim()
+        .isLength({ min: 3, max: 25 })
+        .escape()
+        .withMessage("User name must be between 3 and 25 characters long"),
+    (0, express_validator_1.body)("password")
+        .trim()
+        .isLength({ min: 6 })
+        .withMessage("Password must be at least 6 characters long"),
+    (req, res, next) => {
+        const errors = (0, express_validator_1.validationResult)(req);
+        // if validation didn't succeed
+        if (!errors.isEmpty()) {
+            // Return errors
+            res.json({ errors: errors.array() });
+            return;
         }
-        req.login(user, { session: false }, (loginErr) => {
-            if (loginErr) {
-                res.send(loginErr);
+        passport_1.default.authenticate("local", { session: false }, (err, user) => {
+            if (err || !user) {
+                return res.status(400).json({
+                    message: "Something is not right",
+                    user: user,
+                });
             }
-            // generate a signed son web token with the contents of user object and return it in the response
-            // user must be converted to JSON
-            jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "24h" }, (signErr, token) => {
-                if (signErr) {
-                    return next(signErr);
+            req.login(user, { session: false }, (loginErr) => {
+                if (loginErr) {
+                    res.send(loginErr);
                 }
-                return res.json({ user, token });
+                // generate a signed son web token with the contents of user object and return it in the response
+                // user must be converted to JSON
+                jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "24h" }, (signErr, token) => {
+                    if (signErr) {
+                        return next(signErr);
+                    }
+                    return res.json({ user, token });
+                });
             });
-        });
-    })(req, res);
-};
+        })(req, res);
+    }
+];
 // Sign user up
 exports.create_user = [
     (0, express_validator_1.body)("username")
