@@ -94,7 +94,13 @@ exports.create_user = [
             userModel_1.default.find({ username: req.body.username }).exec((userErr, user) => {
                 if (user.length !== 0) {
                     // return error and user data filled so far
-                    res.json({ error: "Username already exists", user: req.body });
+                    res
+                        .status(400)
+                        .send({
+                        errors: [
+                            { msg: "Username already exists", user: req.body },
+                        ],
+                    });
                 }
                 else {
                     // Create new user
