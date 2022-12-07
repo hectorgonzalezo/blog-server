@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const { body, validationResult } = require("express-validator");
 const postModel_1 = __importDefault(require("../models/postModel"));
 const commentModel_1 = __importDefault(require("../models/commentModel"));
-const POSTERID = "6387b1034b273a93bba9303e";
 // Get all posts
 exports.get_all_posts = (req, res, next) => {
     postModel_1.default.find()
@@ -49,7 +48,7 @@ exports.create_post = [
             content: reqBody.content,
             published: reqBody.published,
             // Change poster id from hardcoded
-            poster: POSTERID,
+            poster: reqBody.poster,
             comments: reqBody.comments,
         });
         newPost.save((err) => {
@@ -106,7 +105,7 @@ exports.update_post = [
             content: reqBody.content,
             published: reqBody.published,
             // Change poster id from hardcoded
-            poster: POSTERID,
+            poster: reqBody.poster,
             comments: reqBody.comments,
             _id: req.params.id,
         });

@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_validator_1 = require("express-validator");
 const commentModel_1 = __importDefault(require("../models/commentModel"));
 const postModel_1 = __importDefault(require("../models/postModel"));
-const COMMENTERID = "6387b1034b273a93bba9303e";
 // Reads return the comment
 // Creates, updates and deletes return the updated post
 // Get all comments in a particular post
@@ -23,10 +22,10 @@ exports.get_all_comments = (req, res, next) => {
 };
 // Create a single comment
 exports.create_comment = [
-    (0, express_validator_1.body)("content", "Blog content is required")
+    (0, express_validator_1.body)("content", "Comment content is required")
         .trim()
         .isLength({ min: 1 })
-        .withMessage("Blog content can't be empty")
+        .withMessage("Comment content can't be empty")
         .escape(),
     (0, express_validator_1.body)("commenter", "Blog commenter is required").trim().escape(),
     (req, res, next) => {
@@ -43,8 +42,7 @@ exports.create_comment = [
         const newComment = new commentModel_1.default({
             content: reqBody.content,
             published: reqBody.published,
-            // Change commenter id from hardcoded
-            commenter: COMMENTERID,
+            commenter: reqBody.commenter,
             post: req.postId,
         });
         newComment.save((err) => {
@@ -57,6 +55,7 @@ exports.create_comment = [
                 upsert: true,
                 rawResult: true,
             };
+            console.log(newComment);
             // add comment to post
             postModel_1.default.findByIdAndUpdate(req.postId, { $push: { comments: newComment } }, updateOption, (updateErr, updatedPost) => {
                 if (updateErr) {
@@ -114,7 +113,7 @@ exports.update_comment = [
             content: reqBody.content,
             published: reqBody.published,
             // Change commenter id from hardcoded
-            commenter: COMMENTERID,
+            commenter: reqBody.commenter,
             post: req.postId,
             _id: req.params.id,
         });

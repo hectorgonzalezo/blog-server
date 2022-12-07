@@ -8,7 +8,6 @@ import Comment from "../models/commentModel";
 import { IPost } from "../types/post";
 import Post from "../models/postModel";
 
-const COMMENTERID = "6387b1034b273a93bba9303e";
 
 // Reads return the comment
 // Creates, updates and deletes return the updated post
@@ -32,10 +31,10 @@ exports.get_all_comments = (
 
 // Create a single comment
 exports.create_comment = [
-  body("content", "Blog content is required")
+  body("content", "Comment content is required")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Blog content can't be empty")
+    .withMessage("Comment content can't be empty")
     .escape(),
   body("commenter", "Blog commenter is required").trim().escape(),
   (req: ExtendedRequest, res: Response, next: NextFunction) => {
@@ -55,8 +54,7 @@ exports.create_comment = [
     const newComment: IComment = new Comment({
       content: reqBody.content,
       published: reqBody.published,
-      // Change commenter id from hardcoded
-      commenter: COMMENTERID,
+      commenter: reqBody.commenter,
       post: req.postId,
     });
     newComment.save((err) => {
@@ -69,6 +67,7 @@ exports.create_comment = [
         upsert: true,
         rawResult: true,
       };
+      console.log(newComment);
       // add comment to post
       Post.findByIdAndUpdate(
         req.postId,
@@ -137,7 +136,7 @@ exports.update_comment = [
       content: reqBody.content,
       published: reqBody.published,
       // Change commenter id from hardcoded
-      commenter: COMMENTERID,
+      commenter: reqBody.commenter,
       post: req.postId,
       _id: req.params.id,
     });

@@ -83,6 +83,7 @@ router.delete(
               (comment && comment.commenter.toString() === user._id.toString())
             ) {
               next();
+              
             } else {
               // if user is not admin, return error
               res.status(403).send({

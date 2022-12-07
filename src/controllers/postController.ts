@@ -7,7 +7,6 @@ import Post from "../models/postModel";
 import { IComment } from "src/types/comment";
 import Comment from "../models/commentModel";
 
-const POSTERID = "6387b1034b273a93bba9303e";
 
 // Get all posts
 exports.get_all_posts = (req: Request, res: Response, next: NextFunction) => {
@@ -55,7 +54,7 @@ exports.create_post = [
       content: reqBody.content,
       published: reqBody.published,
       // Change poster id from hardcoded
-      poster: POSTERID,
+      poster: reqBody.poster,
       comments: reqBody.comments,
     });
     newPost.save((err) => {
@@ -117,7 +116,7 @@ exports.update_post = [
       content: reqBody.content,
       published: reqBody.published,
       // Change poster id from hardcoded
-      poster: POSTERID,
+      poster: reqBody.poster,
       comments: reqBody.comments,
       _id: req.params.id,
     });

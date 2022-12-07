@@ -75,6 +75,7 @@ router.delete(
         if (err) {
           return next(err);
         }
+        console.log(user);
         // Only delete post if user is administrator
         if (user.permission === "admin") {
           next();
