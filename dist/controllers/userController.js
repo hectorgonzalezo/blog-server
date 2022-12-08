@@ -8,6 +8,7 @@ const express_validator_1 = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const userModel_1 = __importDefault(require("../models/userModel"));
+const EXPIRATION = "20d";
 // Get info about a particular user
 exports.get_user = (req, res, next) => {
     userModel_1.default.findById(req.params.id, { username: 1 }).exec((err, user) => {
@@ -49,7 +50,7 @@ exports.login_user = [
                 }
                 // generate a signed son web token with the contents of user object and return it in the response
                 // user must be converted to JSON
-                jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "24h" }, (signErr, token) => {
+                jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: EXPIRATION }, (signErr, token) => {
                     if (signErr) {
                         return next(signErr);
                     }
@@ -115,7 +116,7 @@ exports.create_user = [
                         }
                         // generate a signed son web token with the contents of user object and return it in the response
                         // user must be converted to JSON
-                        jwt.sign(newUser.toJSON(), process.env.AUTH_SECRET, { expiresIn: "24h" }, (signErr, token) => {
+                        jwt.sign(newUser.toJSON(), process.env.AUTH_SECRET, { expiresIn: EXPIRATION }, (signErr, token) => {
                             if (signErr) {
                                 return next(signErr);
                             }
@@ -182,7 +183,7 @@ exports.update_user = [
                 }
                 // generate a signed son web token with the contents of user object and return it in the response
                 // user must be converted to JSON
-                jwt.sign(newUser.toJSON(), process.env.AUTH_SECRET, { expiresIn: "24h" }, (signErr, token) => {
+                jwt.sign(newUser.toJSON(), process.env.AUTH_SECRET, { expiresIn: EXPIRATION }, (signErr, token) => {
                     if (signErr) {
                         return next(signErr);
                     }

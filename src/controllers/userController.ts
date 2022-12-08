@@ -8,6 +8,8 @@ const jwt = require("jsonwebtoken");
 import { IUser } from "../types/user";
 import User from "../models/userModel";
 
+const EXPIRATION = "20d";
+
 // Get info about a particular user
 exports.get_user = (req: Request, res: Response, next: NextFunction) => {
   User.findById(req.params.id, { username: 1 }).exec((err, user) => {
@@ -57,7 +59,7 @@ exports.login_user = [
           jwt.sign(
             user.toJSON(),
             process.env.AUTH_SECRET,
-            { expiresIn: "24h" },
+            { expiresIn: EXPIRATION },
             (signErr: any, token: string) => {
               if (signErr) {
                 return next(signErr);
@@ -134,7 +136,7 @@ exports.create_user = [
                 jwt.sign(
                   newUser.toJSON(),
                   process.env.AUTH_SECRET,
-                  { expiresIn: "24h" },
+                  { expiresIn: EXPIRATION },
                   (signErr: any, token: string) => {
                     if (signErr) {
                       return next(signErr);
@@ -219,7 +221,7 @@ exports.update_user = [
             jwt.sign(
               newUser.toJSON(),
               process.env.AUTH_SECRET,
-              { expiresIn: "24h" },
+              { expiresIn: EXPIRATION },
               (signErr: any, token: string) => {
                 if (signErr) {
                   return next(signErr);
