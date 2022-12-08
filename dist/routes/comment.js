@@ -28,14 +28,18 @@ router.put("/:id", (req, res, next) => {
                 return next(findErr);
             }
             // Only update if user is administrator or the commenter
-            if (user.permission === "admin" ||
-                (comment && comment.commenter.toString() === user._id.toString())) {
+            if (user !== false && user.permission === "admin" ||
+                (comment && user !== false && comment.commenter.toString() === user._id.toString())) {
                 next();
             }
             else {
                 // if user is not admin, return error
                 res.status(403).send({
-                    error: "Only administrators or the user itself can update a comment",
+                    errors: [
+                        {
+                            msg: "Only administrators or the user itself can update a comment",
+                        },
+                    ],
                 });
             }
         });
@@ -60,7 +64,11 @@ router.delete("/:id", (req, res, next) => {
             else {
                 // if user is not admin, return error
                 res.status(403).send({
-                    error: "Only administrators or the user itself can delete a comment",
+                    errors: [
+                        {
+                            msg: "Only administrators or the user itself can delete a comment",
+                        },
+                    ],
                 });
             }
         });

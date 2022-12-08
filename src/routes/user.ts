@@ -28,7 +28,11 @@ router.get(
         } else {
           // if user is not admin, return error
           res.status(403).send({
-            error: "Only administrators can get info about users",
+            errors: [
+              {
+                msg: "Only administrators can get info about users",
+              },
+            ],
           });
         }
       }
@@ -60,7 +64,11 @@ router.put(
         } else {
           // if user is not admin, return error
           res.status(403).send({
-            error: "Only administrators or the user itself can update a user",
+            errors: [
+              {
+                msg: "Only administrators or the user itself can update a user",
+              },
+            ],
           });
         }
       }
@@ -87,7 +95,11 @@ router.delete(
         } else {
           // if user is not admin, return error
           res.status(403).send({
-            error: "Only administrators can delete users",
+            errors: [
+              {
+                msg: "Only administrators can delete users",
+              },
+            ],
           });
         }
       }

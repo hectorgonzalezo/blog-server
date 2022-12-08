@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 import { IUser } from "../types/user";
 import User from "../models/userModel";
 
-const EXPIRATION = "20d";
+const EXPIRATION = "24h";
 
 // Get info about a particular user
 exports.get_user = (req: Request, res: Response, next: NextFunction) => {

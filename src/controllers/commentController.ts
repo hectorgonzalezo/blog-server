@@ -67,7 +67,6 @@ exports.create_comment = [
         upsert: true,
         rawResult: true,
       };
-      console.log(newComment);
       // add comment to post
       Post.findByIdAndUpdate(
         req.postId,

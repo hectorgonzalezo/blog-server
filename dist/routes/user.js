@@ -25,7 +25,11 @@ router.get("/:id", (req, res, next) => {
         else {
             // if user is not admin, return error
             res.status(403).send({
-                error: "Only administrators can get info about users",
+                errors: [
+                    {
+                        msg: "Only administrators can get info about users",
+                    },
+                ],
             });
         }
     })(req, res, next);
@@ -46,7 +50,11 @@ router.put("/:id", (req, res, next) => {
         else {
             // if user is not admin, return error
             res.status(403).send({
-                error: "Only administrators or the user itself can update a user",
+                errors: [
+                    {
+                        msg: "Only administrators or the user itself can update a user",
+                    },
+                ],
             });
         }
     })(req, res, next);
@@ -65,7 +73,11 @@ router.delete("/:id", (req, res, next) => {
         else {
             // if user is not admin, return error
             res.status(403).send({
-                error: "Only administrators can delete users",
+                errors: [
+                    {
+                        msg: "Only administrators can delete users",
+                    },
+                ],
             });
         }
     })(req, res, next);

@@ -55,7 +55,6 @@ exports.create_comment = [
                 upsert: true,
                 rawResult: true,
             };
-            console.log(newComment);
             // add comment to post
             postModel_1.default.findByIdAndUpdate(req.postId, { $push: { comments: newComment } }, updateOption, (updateErr, updatedPost) => {
                 if (updateErr) {

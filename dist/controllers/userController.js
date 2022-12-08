@@ -8,7 +8,7 @@ const express_validator_1 = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const userModel_1 = __importDefault(require("../models/userModel"));
-const EXPIRATION = "20d";
+const EXPIRATION = "24h";
 // Get info about a particular user
 exports.get_user = (req, res, next) => {
     userModel_1.default.findById(req.params.id, { username: 1 }).exec((err, user) => {

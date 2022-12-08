@@ -48,7 +48,7 @@ passport.use(
       secretOrKey: process.env.AUTH_SECRET,
     },
     (jwtPayload: any, cb: Function) => {
-      // find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
+      // find the user in db 
       return User.findById(jwtPayload._id, (err: MongoError, user: any) => {
         if (err) {
           return cb(err);

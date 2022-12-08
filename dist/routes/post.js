@@ -25,7 +25,11 @@ router.post("/", (req, res, next) => {
         else {
             // if user is not admin, return error
             res.status(403).send({
-                error: "Only administrators can create a post",
+                errors: [
+                    {
+                        msg: "Only administrators can create a post",
+                    },
+                ],
             });
         }
     })(req, res, next);
@@ -43,7 +47,11 @@ router.put("/:id", (req, res, next) => {
         else {
             // if user is not admin, return error
             res.status(403).send({
-                error: "Only administrators can update a post",
+                errors: [
+                    {
+                        msg: "Only administrators can update a post",
+                    },
+                ],
             });
         }
     })(req, res, next);
@@ -62,7 +70,11 @@ router.delete("/:id", (req, res, next) => {
         else {
             // if user is not admin, return error
             res.status(403).send({
-                error: "Only administrators can delete a post",
+                errors: [
+                    {
+                        msg: "Only administrators can delete a post",
+                    },
+                ],
             });
         }
     })(req, res, next);
