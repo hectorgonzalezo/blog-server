@@ -131,11 +131,11 @@ exports.update_post = [
       req.params.id,
       newPost,
       updateOption,
-      (updateErr, updatedPost: IPost) => {
+      (updateErr, updatedPost: { value:  IPost }) => {
         if (updateErr) {
           return next(updateErr);
         }
-        res.json({ post: updatedPost });
+        res.json({ post: updatedPost.value });
       }
     );
   },

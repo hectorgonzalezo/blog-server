@@ -120,7 +120,7 @@ exports.update_post = [
             if (updateErr) {
                 return next(updateErr);
             }
-            res.json({ post: updatedPost });
+            res.json({ post: updatedPost.value });
         });
     },
 ];
