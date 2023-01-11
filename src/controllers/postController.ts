@@ -31,8 +31,7 @@ exports.create_post = [
   body("content", "Blog content is required")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Blog content can't be empty")
-    .escape(),
+    .withMessage("Blog content can't be empty"),
   body("poster", "Blog poster is required").trim().escape(),
   (req: Request, res: Response, next: NextFunction) => {
     // get validation errors
@@ -49,6 +48,7 @@ exports.create_post = [
       IPost,
       "title" | "content" | "published" | "poster" | "comments"
     >;
+    console.log(reqBody.content)
     const newPost: IPost = new Post({
       title: reqBody.title,
       content: reqBody.content,
@@ -93,8 +93,7 @@ exports.update_post = [
   body("content", "Blog content is required")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Blog content can't be empty")
-    .escape(),
+    .withMessage("Blog content can't be empty"),
   body("poster", "Blog poster is required").trim().escape(),
   (req: Request, res: Response, next: NextFunction) => {
     // get validation errors

@@ -28,8 +28,7 @@ exports.create_post = [
     body("content", "Blog content is required")
         .trim()
         .isLength({ min: 1 })
-        .withMessage("Blog content can't be empty")
-        .escape(),
+        .withMessage("Blog content can't be empty"),
     body("poster", "Blog poster is required").trim().escape(),
     (req, res, next) => {
         // get validation errors
@@ -43,6 +42,7 @@ exports.create_post = [
         // If data is valid
         // Create new post
         const reqBody = req.body;
+        console.log(reqBody.content);
         const newPost = new postModel_1.default({
             title: reqBody.title,
             content: reqBody.content,
@@ -85,8 +85,7 @@ exports.update_post = [
     body("content", "Blog content is required")
         .trim()
         .isLength({ min: 1 })
-        .withMessage("Blog content can't be empty")
-        .escape(),
+        .withMessage("Blog content can't be empty"),
     body("poster", "Blog poster is required").trim().escape(),
     (req, res, next) => {
         // get validation errors
