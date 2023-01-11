@@ -1,7 +1,57 @@
-# Blog REST API
-By Héctor González Orozco
+# Reddit clone server
 
-Blog API made with Node, Express, Mongo and Typescript.
+Back end for Blog MERN stack app.
 
-API is hosted at: [https://blogserver-production.up.railway.app/](https://blogserver-production.up.railway.app/)
+Code for the front end can be found [here](https://github.com/hectorgonzalezo/blog_client).
 
+By [Héctor González Orozco](https://github.com/hectorgonzalezo)
+
+## :computer: Built With
+
+* [NodeJS](https://nodejs.org/)
+* [MongoDB](https://www.mongodb.com/)
+* [ExpressJS](https://expressjs.com/)
+
+
+## :pager: API URL
+
+Hosted at: [https://blogserver-production.up.railway.app/](https://blogserver-production.up.railway.app/)
+
+## :rocket: Features
+
+- Users can sign up and log in without keeping a server side session by using [passportjs](http://www.passportjs.org/) with [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken).
+
+- Two permission levels for users: regular and administrator.
+
+- Only administrators can add, edit and delete posts.
+
+- Regular users can add and edit comments.
+
+
+
+## :construction: Installing
+
+1. Clone the repository
+
+`git clone https://github.com/hectorgonzalezo/blog_server`
+
+2. Install dependencies
+
+`npm install`
+
+3. Create a .env file on root directory of project with Mongo DB URI and authorization string. The format must be the following:
+
+`MONGODB_URI="mongoUri"`
+`AUTH_SECRET="randomString"`
+
+4. Start the server
+
+`npm start`
+
+Typescript code can be compiled by using the following command:
+
+`npm run build`
+
+Alternatively, The server can be started and compiled in real-time after detecting changes by using:
+
+`npm run dev`
