@@ -36,8 +36,7 @@ exports.login_user = [
     // if validation didn't succeed
     if (!errors.isEmpty()) {
       // Return errors
-      res.json({ errors: errors.array() });
-      return;
+      return res.json({ errors: errors.array() });
     }
 
     passport.authenticate(
@@ -52,21 +51,14 @@ exports.login_user = [
         }
         req.login(user, { session: false }, (loginErr: any) => {
           if (loginErr) {
-            res.send(loginErr);
+            return res.send(loginErr);
           }
           // generate a signed son web token with the contents of user object and return it in the response
           // user must be converted to JSON
-          jwt.sign(
+          const token =  jwt.sign(
             user.toJSON(),
-            process.env.AUTH_SECRET,
-            { expiresIn: EXPIRATION },
-            (signErr: any, token: string) => {
-              if (signErr) {
-                return next(signErr);
-              }
-              return res.json({ user, token });
-            }
-          );
+            process.env.AUTH_SECRET);
+          return res.json({ user, token });
         });
       }
     )(req, res);
@@ -90,67 +82,42 @@ exports.create_user = [
     .withMessage("Password must be at least 6 characters long")
     .custom((value, { req }) => value === req.body.password)
     .withMessage("Passwords don't match!"),
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     // if validation didn't succeed
     if (!errors.isEmpty()) {
       // Return errors
-      res.json({ errors: errors.array() });
+      res.status(400).send({ errors: errors.array() });
       return;
     }
 
     // If its valid
     // encrypt password
-    bcrypt.hash(
-      req.body.password,
-      10,
-      (err: MongoError, hashedPassword: string) => {
-        if (err) {
-          return next(err);
-        }
-        // look if username already exists
-        User.find({ username: req.body.username }).exec(
-          (userErr, user: IUser[]) => {
-            if (user.length !== 0) {
-              // return error and user data filled so far
-              res
-                .status(400)
-                .send({
-                  errors: [
-                    { msg: "Username already exists", user: req.body },
-                  ],
-                });
-            } else {
-              // Create new user
-              const newUser = new User({
-                username: req.body.username,
-                password: hashedPassword,
-                permission: "regular",
-              });
-              newUser.save((userSaveErr) => {
-                if (userSaveErr) {
-                  return next(userSaveErr);
-                }
-                // generate a signed son web token with the contents of user object and return it in the response
-                // user must be converted to JSON
-                jwt.sign(
-                  newUser.toJSON(),
-                  process.env.AUTH_SECRET,
-                  { expiresIn: EXPIRATION },
-                  (signErr: any, token: string) => {
-                    if (signErr) {
-                      return next(signErr);
-                    }
-                    return res.json({ user: newUser, token });
-                  }
-                );
-              });
-            }
-          }
-        );
+    try {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      // look if username already exists
+      const existingUser = await User.find({ username: req.body.username });
+      if (existingUser.length !== 0) {
+        // return error and user data filled so far
+        return res.status(400).send({
+          errors: [{ msg: "Username already exists", user: req.body }],
+        });
       }
-    );
-  },
+      // Create new user
+      const newUser = new User({
+        username: req.body.username,
+        password: hashedPassword,
+        permission: "regular",
+      });
+      const user = await newUser.save();
+      // generate a signed son web token with the contents of user object and return it in the response
+      // user must be converted to JSON
+      const token = jwt.sign(newUser.toJSON(), process.env.AUTH_SECRET);
+      return res.json({ user: newUser, token });
+    } catch (err) {
+      return next(err);
+    }
+},
 ];
 
 // Update a single user
@@ -174,7 +141,7 @@ exports.update_user = [
     .trim()
     .isIn(["regular", "admin"])
     .withMessage("User permission can only be regular or admin"),
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     // if validation didn't succeed
     if (!errors.isEmpty()) {
@@ -185,54 +152,33 @@ exports.update_user = [
 
     // If its valid
     // encrypt password
-    bcrypt.hash(
-      req.body.password,
-      10,
-      (err: MongoError, hashedPassword: string) => {
-        if (err) {
-          return next(err);
-        }
-        // Create new user
-        const newUser = new User({
-          username: req.body.username,
-          password: hashedPassword,
-          permission: req.body.permission,
-          _id: req.params.id,
-        });
+    try {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-        // option to return updated post
-        const updateOption: QueryOptions & { rawResult: true } = {
-          new: true,
-          upsert: true,
-          rawResult: true,
-        };
-
-        // update user in database
-        User.findByIdAndUpdate(
-          req.params.id,
-          newUser,
-          updateOption,
-          (updateErr, updatedUser) => {
-            if (updateErr) {
-              return next(updateErr);
-            }
-            // generate a signed son web token with the contents of user object and return it in the response
-            // user must be converted to JSON
-            jwt.sign(
-              newUser.toJSON(),
-              process.env.AUTH_SECRET,
-              { expiresIn: EXPIRATION },
-              (signErr: any, token: string) => {
-                if (signErr) {
-                  return next(signErr);
-                }
-                return res.json({ user: updatedUser.value, token });
-              }
-            );
-          }
-        );
-      }
-    );
+      // Create new user
+      const newUser = new User({
+        username: req.body.username,
+        password: hashedPassword,
+        permission: req.body.permission,
+      });
+      // option to return updated post
+      const updateOption: QueryOptions & { rawResult: true } = {
+        new: true,
+        upsert: true,
+        rawResult: true,
+      };
+      const user = await User.findByIdAndUpdate(
+        req.params.id,
+        newUser,
+        updateOption
+      );
+      // generate a signed son web token with the contents of user object and return it in the response
+      // user must be converted to JSON
+      const token = jwt.sign(newUser.toJSON(), process.env.AUTH_SECRET);
+      return res.json({ user: newUser, token });
+    } catch (err) {
+      return next(err);
+    }
   },
 ];
 

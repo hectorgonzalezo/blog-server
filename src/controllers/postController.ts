@@ -6,19 +6,20 @@ import { IPost } from "../types/post";
 import Post from "../models/postModel";
 import { IComment } from "src/types/comment";
 import Comment from "../models/commentModel";
+import { nextTick } from "process";
 
 
 // Get all posts
-exports.get_all_posts = (req: Request, res: Response, next: NextFunction) => {
-  Post.find()
+exports.get_all_posts = async (req: Request, res: Response, next: NextFunction) => {
+  try{
+  const posts = await Post.find()
     .sort({ createdAt: 1 })
-    .populate("poster", "username")
-    .exec((err, posts: IPost[]) => {
-      if (err) {
-        return next(err);
-      }
-      res.json({ posts });
-    });
+    .populate("poster", "username");
+    
+    return res.json({ posts });
+    } catch(err){
+      return next(err);
+    }
 };
 
 // Create a single post
@@ -33,14 +34,13 @@ exports.create_post = [
     .isLength({ min: 1 })
     .withMessage("Blog content can't be empty"),
   body("poster", "Blog poster is required").trim().escape(),
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     // get validation errors
     const errors = validationResult(req);
     // If there are errors, return body
     if (!errors.isEmpty()) {
       // There are errors, send them via json
-      res.json({ errors: errors.array() });
-      return;
+      return res.json({ errors: errors.array() });
     }
     // If data is valid
     // Create new post
@@ -48,7 +48,6 @@ exports.create_post = [
       IPost,
       "title" | "content" | "published" | "poster" | "comments"
     >;
-    console.log(reqBody.content)
     const newPost: IPost = new Post({
       title: reqBody.title,
       content: reqBody.content,
@@ -57,30 +56,29 @@ exports.create_post = [
       poster: reqBody.poster,
       comments: reqBody.comments,
     });
-    newPost.save((err) => {
-      if (err) {
-        return next(err);
-      }
+    try {
+      const post = await newPost.save();
       // Successful, send post data
-      res.json({ post: newPost });
-    });
+      return res.json({ post: newPost });
+    } catch (error) {
+     return next(error);
+    }
   },
 ];
 
 // Get a single post
-exports.get_post = (req: Request, res: Response, next: NextFunction) => {
-  Post.findById(req.params.id)
-    .populate("poster", "username")
-    .populate({
-      path: "comments",
-      populate: { path: "commenter", select: "username" },
-    })
-    .exec((err, post) => {
-      if (err) {
-        return next(err);
-      }
-      res.json({ post });
-    });
+exports.get_post = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const post = await Post.findById(req.params.id)
+      .populate("poster", "username")
+      .populate({
+        path: "comments",
+        populate: { path: "commenter", select: "username" },
+      });
+    return res.json({ post });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 // update existing post
@@ -95,7 +93,7 @@ exports.update_post = [
     .isLength({ min: 1 })
     .withMessage("Blog content can't be empty"),
   body("poster", "Blog poster is required").trim().escape(),
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     // get validation errors
     const errors = validationResult(req);
     // If there are errors, return body
@@ -126,17 +124,15 @@ exports.update_post = [
       rawResult: true,
     };
     // update previous post with new data
-    Post.findByIdAndUpdate(
+    try {
+    const post = await Post.findByIdAndUpdate(
       req.params.id,
       newPost,
-      updateOption,
-      (updateErr, updatedPost: { value:  IPost }) => {
-        if (updateErr) {
-          return next(updateErr);
-        }
-        res.json({ post: updatedPost.value });
-      }
-    );
+      updateOption);
+      return res.json({ post: post.value });
+    } catch (err) {
+      return next(err);
+    }
   },
 ];
 
