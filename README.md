@@ -15,7 +15,7 @@ By [Héctor González Orozco](https://github.com/hectorgonzalezo)
 
 ## :pager: API URL
 
-Hosted at: [https://blogserver-production.up.railway.app/](https://blogserver-production.up.railway.app/)
+Hosted at: [https://blog-server-23rz.onrender.com/](https://blog-server-23rz.onrender.com/)
 
 ## :rocket: Features
 
