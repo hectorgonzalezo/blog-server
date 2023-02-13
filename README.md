@@ -15,7 +15,7 @@ By [Héctor González Orozco](https://github.com/hectorgonzalezo)
 
 ## :pager: API URL
 
-Hosted at: [https://blog-server-23rz.onrender.com/](https://blog-server-23rz.onrender.com/)
+Hosted at: [https://blog-server.herokuapp.com/](https://blog-server.herokuapp.com/);
 
 ## :rocket: Features
 
