@@ -15,8 +15,7 @@ By [Héctor González Orozco](https://github.com/hectorgonzalezo)
 
 ## :pager: API URL
 
-Hosted at: [https://blog-server-23rz.onrender.com/](https://blog-server-23rz.onrender.com/)
-
+Hosted at: [https://blog-server-production-3ce4.up.railway.app/](https://blog-server-production-3ce4.up.railway.app/)
 ## :rocket: Features
 
 - Users can sign up and log in without keeping a server side session by using [passportjs](http://www.passportjs.org/) with [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken).
